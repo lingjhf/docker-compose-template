@@ -1,0 +1,26 @@
+services:
+  grafana:
+    image: grafana/grafana-enterprise:11.4.0-ubuntu
+    network_mode: host
+    user: root
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/data:/var/lib/grafana
+
+  prometheus:
+    image: prom/prometheus:latest
+    network_mode: host
+    user: root
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/data:/prometheus
+      - ./prometheus/web-config.yml:/etc/prometheus/web-config.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--web.config.file=/etc/prometheus/web-config.yml"

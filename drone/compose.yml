@@ -1,0 +1,40 @@
+networks:
+  drone:
+    external: false
+
+services:
+  ci-service:
+    image: drone/drone:2
+    container_name: drone-ci-service
+    environment:
+      - DRONE_GITHUB_CLIENT_ID=CLIENT_ID
+      - DRONE_GITHUB_CLIENT_SECRET=CLIENT_SECRET
+      - DRONE_RPC_SECRET=super-duper-secret
+      - DRONE_SERVER_HOST=ip_address:4000
+      - DRONE_SERVER_PROTO=http
+      - DRONE_USER_CREATE=username:lingjhf,admin:true
+    restart: always
+    networks:
+      - drone
+    volumes:
+      - /var/lib/drone:/data
+    ports:
+      - "4000:80"
+
+  
+  ci-runner:
+    image: drone/drone-runner-docker:1
+    container_name: "drone-ci-runner"
+    environment:
+      - DRONE_RPC_PROTO=http
+      - DRONE_RPC_HOST=drone-ci-service
+      - DRONE_RPC_SECRET=super-duper-secret
+      - DRONE_RUNNER_CAPACITY=2
+      - DRONE_RUNNER_NAME=my-first-runner
+    restart: always
+    networks:
+      - drone
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "4022:3000"
