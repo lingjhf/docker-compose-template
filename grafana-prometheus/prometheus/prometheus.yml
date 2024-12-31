@@ -1,4 +1,7 @@
 scrape_configs:
-  - job_name: 'windows'
+  - job_name: 'tencent_server'
     static_configs:
-      - targets: ['localhost:9182'] 
+      - targets: ['localhost:9100'] 
+    basic_auth:
+      username: "admin"
+      password: "admin"
